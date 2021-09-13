@@ -6,7 +6,7 @@ namespace Plotter
 {
     public class Function : Token
     {
-        public static readonly string[] FUNCTIONS = { "sqrt", "exp", "sen", "cos", "tg", "ln", "arcsen", "arccos", "arctg", "abs", "senh", "cosh", "tgh", "argsenh", "argcosh", "argtgh" };
+        public static readonly string[] FUNCTIONS = { "sqrt", "cbrt", "exp", "ln", "sen", "cos", "tg", "sec", "cosec", "cotg", "arcsen", "arccos", "arctg", "abs", "senh", "cosh", "tgh", "argsenh", "argcosh", "argtgh" };
 
         public static bool IsFunction(string name)
         {

@@ -23,13 +23,6 @@ namespace Plotter
                 return;
             }
 
-            if (token is Variable)
-            {
-                Variable var = (Variable)token;
-                machine.PushLVar(var.Value);
-                return;
-            }
-
             if (token is Function)
             {
                 Function func = (Function) token;
@@ -58,6 +51,10 @@ namespace Plotter
                         machine.PushSqrt();
                         break;
 
+                    case "cbrt":
+                        machine.PushCbrt();
+                        break;
+
                     case "exp":
                         machine.PushExp();
                         break;
@@ -76,6 +73,18 @@ namespace Plotter
 
                     case "tg":
                         machine.PushTan();
+                        break;
+
+                    case "sec":
+                        machine.PushSec();
+                        break;
+
+                    case "cosec":
+                        machine.PushCosec();
+                        break;
+
+                    case "cotg":
+                        machine.PushCotan();
                         break;
 
                     case "arcsen":
@@ -119,6 +128,30 @@ namespace Plotter
                         break;
                 }
 
+                return;
+            }
+
+            if (token is Constant)
+            {
+                Constant c = (Constant) token;
+                switch (c.Name)
+                {
+                    case "e":
+                        machine.PushLConst((float) Math.E);
+                        break;
+
+                    case "pi":
+                        machine.PushLConst((float)Math.PI);
+                        break;
+                }
+                
+                return;
+            }
+
+            if (token is Variable)
+            {
+                Variable var = (Variable)token;
+                machine.PushLVar(var.Name);
                 return;
             }
 

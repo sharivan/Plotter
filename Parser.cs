@@ -55,8 +55,6 @@ namespace Plotter
             if (pos >= input.Length)
                 return null;
 
-            // estado s0
-
             char c = input[pos++];
 
             if (c == '\0')
@@ -66,8 +64,6 @@ namespace Plotter
 
             if (c >= '0' && c <= '9') // é um digito numérico?
             {
-                // estado s1
-
                 string number = c + "";
                 c = input[pos++];
                 while (c >= '0' && c <= '9') // enquanto for um digito numérico
@@ -81,12 +77,10 @@ namespace Plotter
 
                 if (c == '.')
                 {
-                    number += '.';
-                    // estado s2                             
+                    number += '.';                           
                     c = input[pos++];
                     while (c >= '0' && c <= '9') // enquanto for um digito numérico
                     {
-                        // estado s3
                         number += c;
                         c = input[pos++];
                     }
@@ -112,34 +106,24 @@ namespace Plotter
             }
             else if (Symbol.IsSymbol(c))
                 result = new Symbol(c);
-            else if (Variable.IsVariable(c))
+            else if (Variable.IsLetter(c)) // pode ser uma variável, uma constante ou uma função
             {
                 string name = c + "";
-                char c1 = input[pos++];
-                if (!Variable.IsVariable(c1)) // é realmente uma variável
+                c = input[pos++];
+                while (Variable.IsLetter(c) || c == '_') // uma variável, constante ou função pode conter somente letras ou _ (mas não iniciar com _)
                 {
-                    pos--;
-                    result = new Variable(c);
-                }
-                else
-                {
-
-                    // pode ser uma função
-                    name += c1;
+                    name += c;
                     c = input[pos++];
-                    while (Variable.IsVariable(c))
-                    {
-                        name += c;
-                        c = input[pos++];
-                    }
-
-                    pos--;
-
-                    if (!Function.IsFunction(name))
-                        throw new ParserException("Invalid funcion: " + name);
-
-                    result = new Function(name);
                 }
+
+                pos--;
+
+                if (Constant.IsConstant(name))
+                    result = new Constant(name);
+                else if (Function.IsFunction(name))
+                    result = new Function(name);
+                else
+                    result = new Variable(name);
             }
             else
                 throw new ParserException("Invalid character: " + c);

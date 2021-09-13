@@ -12,16 +12,16 @@ namespace Plotter
 {
     public partial class FrmPlotter : Form
     {
-        private const float MINX = -10;
-        private const float MINY = -10;
-        private const float MAXX = 10;
-        private const float MAXY = 10;
+        private const float MINX = -2;
+        private const float MINY = -2;
+        private const float MAXX = 2;
+        private const float MAXY = 2;
 
         private const float MINT = 0;
         private const float MAXT = (float) (2 * Math.PI);
 
         private const float STEPX = 0.1F;
-        private const float STEPT = 0.001F;
+        private const float STEPT = 0.01F;
 
         private StackMachine machine1;
         private StackMachine machine2;
@@ -179,25 +179,31 @@ namespace Plotter
         {
             Graphics g = e.Graphics;
 
+            using (Pen pen = new Pen(Color.Red))
+            {
+                g.DrawLine(pen, 0, pbGraph.ClientSize.Height / 2, pbGraph.ClientSize.Width, pbGraph.ClientSize.Height / 2);
+                g.DrawLine(pen, pbGraph.ClientSize.Width / 2, 0, pbGraph.ClientSize.Width / 2, pbGraph.ClientSize.Height);
+            }
+
             if (machine2.Count > 0 && (parametric ? (machine1.Count > 0) : true))
             {
                 float minX;
                 float maxX;
                 float stepX;
-                char varC;
+                string varC;
                 if (polar || parametric)
                 {
                     minX = minT;
                     maxX = maxT;
                     stepX = stepT;
-                    varC = 't';
+                    varC = "t";
                 }
                 else
                 {
                     minX = this.minX;
                     maxX = this.maxX;
                     stepX = this.stepX;
-                    varC = 'x';
+                    varC = "x";
                 }
 
                 float y;
@@ -252,12 +258,6 @@ namespace Plotter
                     x0 = x;
                     y0 = y;
                 }
-            }
-
-            using (Pen pen = new Pen(Color.Red))
-            {
-                g.DrawLine(pen, 0, pbGraph.ClientSize.Height / 2, pbGraph.ClientSize.Width, pbGraph.ClientSize.Height / 2);
-                g.DrawLine(pen, pbGraph.ClientSize.Width / 2, 0, pbGraph.ClientSize.Width / 2, pbGraph.ClientSize.Height);
             }
         }
 

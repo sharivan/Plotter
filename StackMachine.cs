@@ -16,11 +16,15 @@ namespace Plotter
             DIV,
             POW,
             SQRT,
+            CBRT,
             EXP,
             LN,
             SIN,
             COS,
             TAN,
+            SEC,
+            COSEC,
+            COTAN,
             ASIN,
             ACOS,
             ATAN,
@@ -38,27 +42,27 @@ namespace Plotter
         {
             public Operator op;
             public float number;
-            public char var;
+            public string varName;
 
             public Operation(Operator op)
             {
                 this.op = op;
                 number = 0;
-                var = '\0';
+                varName = null;
             }
 
             public Operation(float number)
             {
                 this.op = Operator.LCONST;
                 this.number = number;
-                var = '\0';
+                varName = null;
             }
 
-            public Operation(char var)
+            public Operation(string varName)
             {
                 this.op = Operator.LVAR;
                 this.number = 0;
-                this.var = var;
+                this.varName = varName;
             }
         }
 
@@ -66,7 +70,7 @@ namespace Plotter
 
         private List<Operation> operations;
         private Stack<float> stack;
-        private Dictionary<char, float> vars;
+        private Dictionary<string, float> vars;
 
         private bool exception;
         private ArithmeticException exceptionObject;
@@ -112,7 +116,7 @@ namespace Plotter
         {
             operations = new List<Operation>();
             stack = new Stack<float>();
-            vars = new Dictionary<char, float>();
+            vars = new Dictionary<string, float>();
 
             generateExceptionObject = true;
         }
@@ -122,10 +126,10 @@ namespace Plotter
             operations.Add(new Operation(number));
         }
 
-        public void PushLVar(char var)
+        public void PushLVar(string name)
         {
-            operations.Add(new Operation(var));
-            vars[var] = 0;
+            operations.Add(new Operation(name));
+            vars[name] = 0;
         }
 
         public void PushAdd()
@@ -158,6 +162,11 @@ namespace Plotter
             operations.Add(new Operation(Operator.SQRT));
         }
 
+        public void PushCbrt()
+        {
+            operations.Add(new Operation(Operator.CBRT));
+        }
+
         public void PushExp()
         {
             operations.Add(new Operation(Operator.EXP));
@@ -182,6 +191,22 @@ namespace Plotter
         {
             operations.Add(new Operation(Operator.TAN));
         }
+
+        public void PushSec()
+        {
+            operations.Add(new Operation(Operator.SEC));
+        }
+
+        public void PushCosec()
+        {
+            operations.Add(new Operation(Operator.COSEC));
+        }
+
+        public void PushCotan()
+        {
+            operations.Add(new Operation(Operator.COTAN));
+        }
+
         public void PushASin()
         {
             operations.Add(new Operation(Operator.ASIN));
@@ -236,9 +261,9 @@ namespace Plotter
             operations.Add(new Operation(Operator.NEG));
         }
 
-        public void SetVar(char var, float value)
+        public void SetVar(string name, float value)
         {
-            vars[var] = value;
+            vars[name] = value;
         }
 
         private float CheckResult(float result)
@@ -291,7 +316,7 @@ namespace Plotter
                         break;
 
                     case Operator.LVAR:
-                        stack.Push(vars[op.var]);
+                        stack.Push(vars[op.varName]);
                         break;
 
                     case Operator.ADD:
@@ -410,6 +435,11 @@ namespace Plotter
                         stack.Push(CheckResult((float) Math.Sqrt(operand1)));
                         break;
 
+                    case Operator.CBRT:
+                        operand1 = stack.Pop();
+                        stack.Push(CheckResult((float)Math.Cbrt(operand1)));
+                        break;
+
                     case Operator.EXP:
                         operand1 = stack.Pop();
                         stack.Push(CheckResult((float) Math.Exp(operand1)));
@@ -446,6 +476,21 @@ namespace Plotter
                     case Operator.TAN:
                         operand1 = stack.Pop();
                         stack.Push(CheckResult((float) Math.Tan(operand1)));
+                        break;
+
+                    case Operator.SEC:
+                        operand1 = stack.Pop();
+                        stack.Push(CheckResult((float) checked(1 / Math.Cos(operand1))));
+                        break;
+
+                    case Operator.COSEC:
+                        operand1 = stack.Pop();
+                        stack.Push(CheckResult((float) checked(1 / Math.Sin(operand1))));
+                        break;
+
+                    case Operator.COTAN:
+                        operand1 = stack.Pop();
+                        stack.Push(CheckResult((float) checked(1 / Math.Tan(operand1))));
                         break;
 
                     case Operator.ASIN:
