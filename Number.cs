@@ -23,7 +23,7 @@ namespace Plotter
 
         public override string ToString()
         {
-            return "Number: " + value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            return "number '" + value.ToString(System.Globalization.CultureInfo.InvariantCulture) + "'";
         }
     }
 }

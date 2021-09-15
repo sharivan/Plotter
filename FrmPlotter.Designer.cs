@@ -30,7 +30,6 @@ namespace Plotter
         private void InitializeComponent()
         {
             this.btnPlot = new System.Windows.Forms.Button();
-            this.lbOutput = new System.Windows.Forms.ListBox();
             this.pbGraph = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.txtMinX = new System.Windows.Forms.TextBox();
@@ -41,13 +40,13 @@ namespace Plotter
             this.txtMaxY = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.gbCoordinates = new System.Windows.Forms.GroupBox();
+            this.chkParametric = new System.Windows.Forms.CheckBox();
             this.rbPolar = new System.Windows.Forms.RadioButton();
             this.rbRectangular = new System.Windows.Forms.RadioButton();
             this.txtMinT = new System.Windows.Forms.TextBox();
             this.lblMinT = new System.Windows.Forms.Label();
             this.txtMaxT = new System.Windows.Forms.TextBox();
             this.lblMaxT = new System.Windows.Forms.Label();
-            this.chkParametric = new System.Windows.Forms.CheckBox();
             this.txtExpression2 = new System.Windows.Forms.TextBox();
             this.lblFunc2 = new System.Windows.Forms.Label();
             this.lblFunc1 = new System.Windows.Forms.Label();
@@ -66,17 +65,6 @@ namespace Plotter
             this.btnPlot.Text = "Plot";
             this.btnPlot.UseVisualStyleBackColor = true;
             this.btnPlot.Click += new System.EventHandler(this.btnPlot_Click);
-            // 
-            // lbOutput
-            // 
-            this.lbOutput.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.lbOutput.FormattingEnabled = true;
-            this.lbOutput.ItemHeight = 15;
-            this.lbOutput.Location = new System.Drawing.Point(777, 453);
-            this.lbOutput.Name = "lbOutput";
-            this.lbOutput.Size = new System.Drawing.Size(791, 409);
-            this.lbOutput.TabIndex = 2;
-            this.lbOutput.Visible = false;
             // 
             // pbGraph
             // 
@@ -176,6 +164,17 @@ namespace Plotter
             this.gbCoordinates.TabStop = false;
             this.gbCoordinates.Text = "Coordenadas";
             // 
+            // chkParametric
+            // 
+            this.chkParametric.AutoSize = true;
+            this.chkParametric.Location = new System.Drawing.Point(6, 72);
+            this.chkParametric.Name = "chkParametric";
+            this.chkParametric.Size = new System.Drawing.Size(89, 19);
+            this.chkParametric.TabIndex = 19;
+            this.chkParametric.Text = "Paramétrica";
+            this.chkParametric.UseVisualStyleBackColor = true;
+            this.chkParametric.CheckedChanged += new System.EventHandler(this.chkParametric_CheckedChanged);
+            // 
             // rbPolar
             // 
             this.rbPolar.AutoSize = true;
@@ -240,17 +239,6 @@ namespace Plotter
             this.lblMaxT.Text = "MaxT";
             this.lblMaxT.Visible = false;
             // 
-            // chkParametric
-            // 
-            this.chkParametric.AutoSize = true;
-            this.chkParametric.Location = new System.Drawing.Point(6, 72);
-            this.chkParametric.Name = "chkParametric";
-            this.chkParametric.Size = new System.Drawing.Size(89, 19);
-            this.chkParametric.TabIndex = 19;
-            this.chkParametric.Text = "Paramétrica";
-            this.chkParametric.UseVisualStyleBackColor = true;
-            this.chkParametric.CheckedChanged += new System.EventHandler(this.chkParametric_CheckedChanged);
-            // 
             // txtExpression2
             // 
             this.txtExpression2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -311,7 +299,6 @@ namespace Plotter
             this.Controls.Add(this.txtMinX);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pbGraph);
-            this.Controls.Add(this.lbOutput);
             this.Controls.Add(this.btnPlot);
             this.Controls.Add(this.txtExpression2);
             this.DoubleBuffered = true;
@@ -328,7 +315,6 @@ namespace Plotter
 
         #endregion
         private System.Windows.Forms.Button btnPlot;
-        private System.Windows.Forms.ListBox lbOutput;
         private System.Windows.Forms.PictureBox pbGraph;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtMinX;

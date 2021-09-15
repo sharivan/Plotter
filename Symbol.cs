@@ -36,7 +36,7 @@ namespace Plotter
 
         public override string ToString()
         {
-            return "Symbol: " + value;
+            return "symbol '" + value + "'";
         }
     }
 }

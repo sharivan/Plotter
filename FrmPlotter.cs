@@ -12,13 +12,13 @@ namespace Plotter
 {
     public partial class FrmPlotter : Form
     {
-        private const float MINX = -2;
-        private const float MINY = -2;
-        private const float MAXX = 2;
-        private const float MAXY = 2;
+        private const float MINX = -3;
+        private const float MINY = -3;
+        private const float MAXX = 3;
+        private const float MAXY = 3;
 
         private const float MINT = 0;
-        private const float MAXT = (float) (2 * Math.PI);
+        private const float MAXT = (float)(2 * Math.PI);
 
         private const float STEPX = 0.1F;
         private const float STEPT = 0.01F;
@@ -57,8 +57,8 @@ namespace Plotter
 
         private PointF PolarTransform(float r, float theta)
         {
-            float x = (float) (r * Math.Cos(theta));
-            float y = (float) (r * Math.Sin(theta));
+            float x = (float)(r * Math.Cos(theta));
+            float y = (float)(r * Math.Sin(theta));
 
             return new PointF(x, y);
         }
@@ -102,8 +102,6 @@ namespace Plotter
                 return;
             }
 
-            //lbOutput.Items.Clear();
-
             machine1.Clear();
             machine2.Clear();
 
@@ -113,16 +111,6 @@ namespace Plotter
                 MessageBox.Show("Expressão vazia!");
                 return;
             }
-
-            /*Parser parser = new Parser(expression);
-            while (true)
-            {
-                Token token = parser.NextToken();
-                if (token == null)
-                    break;
-
-                lbOutput.Items.Add(token.ToString());
-            }*/
 
             try
             {
@@ -169,9 +157,6 @@ namespace Plotter
 
             polar = rbPolar.Checked;
 
-            //float result = machine.Eval();
-            //lbOutput.Items.Add(result.ToString(System.Globalization.CultureInfo.InvariantCulture));
-
             pbGraph.Invalidate();
         }
 
@@ -185,37 +170,45 @@ namespace Plotter
                 g.DrawLine(pen, pbGraph.ClientSize.Width / 2, 0, pbGraph.ClientSize.Width / 2, pbGraph.ClientSize.Height);
             }
 
-            if (machine2.Count > 0 && (parametric ? (machine1.Count > 0) : true))
+            if (machine2.Size > 0 && (parametric ? (machine1.Size > 0) : true))
             {
-                float minX;
-                float maxX;
-                float stepX;
-                string varC;
+                float t0;
+                float t1;
+                float dt;
+                int varIndex1;
+                int varIndex2;
                 if (polar || parametric)
                 {
-                    minX = minT;
-                    maxX = maxT;
-                    stepX = stepT;
-                    varC = "t";
+                    t0 = minT;
+                    t1 = maxT;
+                    dt = stepT;
+                    varIndex1 = machine1.GetVarIndex("t");
+                    varIndex2 = machine2.GetVarIndex("t");
                 }
                 else
                 {
-                    minX = this.minX;
-                    maxX = this.maxX;
-                    stepX = this.stepX;
-                    varC = "x";
+                    t0 = minX;
+                    t1 = maxX;
+                    dt = stepX;
+                    varIndex1 = machine1.GetVarIndex("x");
+                    varIndex2 = machine2.GetVarIndex("x");
                 }
 
                 float y;
                 float x;
+
                 float x0 = 0;
                 float y0 = 0;
+
+                float width = t1 - t0;
+                float height = maxY - minY;
+
                 bool first = true;
-                for (float var = minX; var <= maxX; var += stepX)
+                for (float t = t0; t <= t1; t += dt)
                 {
                     if (parametric)
                     {
-                        machine1.SetVar(varC, var);
+                        machine1.SetVar(varIndex1, t);
                         x = machine1.Eval();
                         if (machine1.Exception)
                         {
@@ -224,11 +217,11 @@ namespace Plotter
                         }
                     }
                     else
-                        x = var;
+                        x = t;
 
-                    machine2.SetVar(varC, var);
+                    machine2.SetVar(varIndex2, t);
                     y = machine2.Eval();
-                    if (machine2.Exception)
+                    if (machine2.Exception || !first && (Math.Abs(x - x0) >= width || Math.Abs(y - y0) >= height))
                     {
                         first = true;
                         continue;

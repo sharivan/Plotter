@@ -34,7 +34,7 @@ namespace Plotter
 
         public override string ToString()
         {
-            return "Constant: " + name;
+            return "constant '" + name + "'";
         }
     }
 }

@@ -52,7 +52,7 @@ namespace Plotter
 
         public override string ToString()
         {
-            return "Variable: " + name;
+            return "variable '" + name + "'";
         }
     }
 }

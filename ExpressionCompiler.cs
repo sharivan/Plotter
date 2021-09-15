@@ -16,34 +16,25 @@ namespace Plotter
         private void PrimaryExpression(StackMachine machine)
         {
             Token token = parser.NextToken();
+            if (token == null)
+                throw new ParserException("End of expression reached but primary expression expected.");
+
             if (token is Number)
             {
-                Number number = (Number) token;
+                Number number = (Number)token;
                 machine.PushLConst(number.Value);
                 return;
             }
 
             if (token is Function)
             {
-                Function func = (Function) token;
+                Function func = (Function)token;
 
-                token = parser.NextToken();
-                if (!(token is Symbol))
-                    throw new ParserException("Unexpected token: " + token);
-
-                Symbol symbol = (Symbol)token;
-                if (symbol.Value != '(')
-                    throw new ParserException("Unexpected symbol: " + symbol.Value);
+                parser.NextSymbol('(', true);
 
                 AdditiveExpression(machine);
 
-                token = parser.NextToken();
-                if (!(token is Symbol))
-                    throw new ParserException("Unexpected token: " + token);
-
-                symbol = (Symbol)token;
-                if (symbol.Value != ')')
-                    throw new ParserException("Unexpected symbol: " + symbol.Value);
+                parser.NextSymbol(')', true);
 
                 switch (func.Name)
                 {
@@ -133,18 +124,18 @@ namespace Plotter
 
             if (token is Constant)
             {
-                Constant c = (Constant) token;
+                Constant c = (Constant)token;
                 switch (c.Name)
                 {
                     case "e":
-                        machine.PushLConst((float) Math.E);
+                        machine.PushLConst((float)Math.E);
                         break;
 
                     case "pi":
                         machine.PushLConst((float)Math.PI);
                         break;
                 }
-                
+
                 return;
             }
 
@@ -157,19 +148,13 @@ namespace Plotter
 
             if (token is Symbol)
             {
-                Symbol symbol = (Symbol) token;
+                Symbol symbol = (Symbol)token;
                 if (symbol.Value != '(')
-                    throw new ParserException("Unexpected symbol: " + symbol.Value);
+                    throw new ParserException("'(' expected but '" + symbol.Value + "' found");
 
                 AdditiveExpression(machine);
 
-                token = parser.NextToken();
-                if (!(token is Symbol))
-                    throw new ParserException("Unexpected token: " + token);
-
-                symbol = (Symbol)token;
-                if (symbol.Value != ')')
-                    throw new ParserException("Unexpected symbol: " + symbol.Value);
+                parser.NextSymbol(')', true);
 
                 return;
             }
@@ -181,40 +166,29 @@ namespace Plotter
         {
             PrimaryExpression(machine);
 
-            bool loop = true;
-            while (loop)
+            while (true)
             {
-                Token token = parser.NextToken();
-                if (token is Symbol)
-                {
-                    Symbol symbol = (Symbol)token;
-                    if (symbol.Value != '^')
-                    {
-                        parser.PreviusToken();
-                        loop = false;
-                    }
+                Symbol symbol = parser.NextSymbol(false);
+                if (symbol == null)
+                    return;
 
-                    if (loop)
-                    {
-                        UnaryExpression(machine);
-                        machine.PushPow();
-                    }
-                }
-                else
+                if (symbol.Value != '^')
                 {
                     parser.PreviusToken();
-                    loop = false;
+                    return;
                 }
+
+                UnaryExpression(machine);
+                machine.PushPow();
             }
         }
 
         private void UnaryExpression(StackMachine machine)
         {
             bool neg = false;
-            Token token = parser.NextToken();
-            if (token is Symbol)
+            Symbol symbol = parser.NextSymbol(false);
+            if (symbol != null)
             {
-                Symbol symbol = (Symbol)token;
                 switch (symbol.Value)
                 {
                     case '+':
@@ -229,8 +203,6 @@ namespace Plotter
                         break;
                 }
             }
-            else
-                parser.PreviusToken();
 
             PotenciativeExpression(machine);
 
@@ -242,47 +214,36 @@ namespace Plotter
         {
             UnaryExpression(machine);
 
-            bool loop = true;
-            while (loop)
+            while (true)
             {
-                Token token = parser.NextToken();
-                if (token is Symbol)
+                Symbol symbol = parser.NextSymbol(false);
+                if (symbol == null)
+                    return;
+
+                switch (symbol.Value)
                 {
-                    Symbol symbol = (Symbol)token;
-                    switch (symbol.Value)
-                    {
-                        case '*':
-                            break;
+                    case '*':
+                        break;
 
-                        case '/':
-                            break;
+                    case '/':
+                        break;
 
-                        default:
-                            parser.PreviusToken();
-                            loop = false;
-                            break;
-                    }
-
-                    if (loop)
-                    {
-                        UnaryExpression(machine);
-
-                        switch (symbol.Value)
-                        {
-                            case '*':
-                                machine.PushMul();
-                                break;
-
-                            case '/':
-                                machine.PushDiv();
-                                break;
-                        }
-                    }
+                    default:
+                        parser.PreviusToken();
+                        return;
                 }
-                else
+
+                UnaryExpression(machine);
+
+                switch (symbol.Value)
                 {
-                    parser.PreviusToken();
-                    loop = false;
+                    case '*':
+                        machine.PushMul();
+                        break;
+
+                    case '/':
+                        machine.PushDiv();
+                        break;
                 }
             }
         }
@@ -291,47 +252,36 @@ namespace Plotter
         {
             MultiplicativeExpression(machine);
 
-            bool loop = true;
-            while (loop)
+            while (true)
             {
-                Token token = parser.NextToken();
-                if (token is Symbol)
+                Symbol symbol = parser.NextSymbol(false);
+                if (symbol == null)
+                    return;
+
+                switch (symbol.Value)
                 {
-                    Symbol symbol = (Symbol)token;
-                    switch (symbol.Value)
-                    {
-                        case '+':
-                            break;
+                    case '+':
+                        break;
 
-                        case '-':
-                            break;
+                    case '-':
+                        break;
 
-                        default:
-                            parser.PreviusToken();
-                            loop = false;
-                            break;
-                    }
-
-                    if (loop)
-                    {
-                        MultiplicativeExpression(machine);
-
-                        switch (symbol.Value)
-                        {
-                            case '+':
-                                machine.PushAdd();
-                                break;
-
-                            case '-':
-                                machine.PushSub();
-                                break;
-                        }
-                    }
+                    default:
+                        parser.PreviusToken();
+                        return;
                 }
-                else
+
+                MultiplicativeExpression(machine);
+
+                switch (symbol.Value)
                 {
-                    parser.PreviusToken();
-                    loop = false;
+                    case '+':
+                        machine.PushAdd();
+                        break;
+
+                    case '-':
+                        machine.PushSub();
+                        break;
                 }
             }
         }
@@ -340,6 +290,10 @@ namespace Plotter
         {
             parser.Input = expression;
             AdditiveExpression(machine);
+
+            Token token = parser.NextToken();
+            if (token != null)
+                throw new ParserException("End of expression expected but " + token + " found.");
         }
     }
 }
