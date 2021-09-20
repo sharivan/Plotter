@@ -157,6 +157,16 @@ namespace Plotter
 
             polar = rbPolar.Checked;
 
+            if (parametric || polar)
+            {
+                machine2.SetVar("t", 0);
+
+                if (parametric)
+                    machine1.SetVar("t", 0);
+            }
+            else
+                machine2.SetVar("x", 0);
+
             pbGraph.Invalidate();
         }
 
