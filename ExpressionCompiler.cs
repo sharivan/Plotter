@@ -6,7 +6,7 @@ namespace Plotter
 {
     public class ExpressionCompiler
     {
-        private Parser parser;
+        private readonly Parser parser;
 
         public ExpressionCompiler()
         {
@@ -21,14 +21,14 @@ namespace Plotter
 
             if (token is Number)
             {
-                Number number = (Number)token;
+                var number = (Number)token;
                 machine.PushLConst(number.Value);
                 return;
             }
 
             if (token is Function)
             {
-                Function func = (Function)token;
+                var func = (Function)token;
 
                 parser.NextSymbol('(', true);
 
@@ -124,7 +124,7 @@ namespace Plotter
 
             if (token is Constant)
             {
-                Constant c = (Constant)token;
+                var c = (Constant)token;
                 switch (c.Name)
                 {
                     case "e":
@@ -141,14 +141,14 @@ namespace Plotter
 
             if (token is Variable)
             {
-                Variable var = (Variable)token;
+                var var = (Variable)token;
                 machine.PushLVar(var.Name);
                 return;
             }
 
             if (token is Symbol)
             {
-                Symbol symbol = (Symbol)token;
+                var symbol = (Symbol)token;
                 if (symbol.Value != '(')
                     throw new ParserException("'(' expected but '" + symbol.Value + "' found");
 

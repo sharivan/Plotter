@@ -6,24 +6,13 @@ namespace Plotter
 {
     public class Number : Token
     {
-        private float value;
-
-        public float Value
-        {
-            get
-            {
-                return value;
-            }
-        }
+        public float Value { get; }
 
         public Number(float value)
         {
-            this.value = value;
+            this.Value = value;
         }
 
-        public override string ToString()
-        {
-            return "number '" + value.ToString(System.Globalization.CultureInfo.InvariantCulture) + "'";
-        }
+        public override string ToString() => "number '" + Value.ToString(System.Globalization.CultureInfo.InvariantCulture) + "'";
     }
 }

@@ -19,24 +19,13 @@ namespace Plotter
             return false;
         }
 
-        private char value;
-
-        public char Value
-        {
-            get
-            {
-                return value;
-            }
-        }
+        public char Value { get; }
 
         public Symbol(char value)
         {
-            this.value = value;
+            this.Value = value;
         }
 
-        public override string ToString()
-        {
-            return "symbol '" + value + "'";
-        }
+        public override string ToString() => "symbol '" + Value + "'";
     }
 }

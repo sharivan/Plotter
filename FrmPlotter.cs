@@ -23,9 +23,9 @@ namespace Plotter
         private const float STEPX = 0.1F;
         private const float STEPT = 0.01F;
 
-        private StackMachine machine1;
-        private StackMachine machine2;
-        private ExpressionCompiler compiler;
+        private readonly StackMachine machine1;
+        private readonly StackMachine machine2;
+        private readonly ExpressionCompiler compiler;
 
         private float minX = MINX;
         private float minY = MINY;
@@ -35,8 +35,8 @@ namespace Plotter
         private float minT = MINT;
         private float maxT = MAXT;
 
-        private float stepX = STEPX;
-        private float stepT = STEPT;
+        private readonly float stepX = STEPX;
+        private readonly float stepT = STEPT;
 
         private int savedTop;
 
@@ -79,10 +79,7 @@ namespace Plotter
             return new PointF(x * scaleX + pbGraph.ClientSize.Width / 2, pbGraph.ClientSize.Height / 2 - y * scaleY);
         }
 
-        private PointF TransformPoint(PointF p)
-        {
-            return TransformPoint(p.X, p.Y);
-        }
+        private PointF TransformPoint(PointF p) => TransformPoint(p.X, p.Y);
 
         private void btnPlot_Click(object sender, EventArgs e)
         {
@@ -174,7 +171,7 @@ namespace Plotter
         {
             Graphics g = e.Graphics;
 
-            using (Pen pen = new Pen(Color.Red))
+            using (var pen = new Pen(Color.Red))
             {
                 g.DrawLine(pen, 0, pbGraph.ClientSize.Height / 2, pbGraph.ClientSize.Width, pbGraph.ClientSize.Height / 2);
                 g.DrawLine(pen, pbGraph.ClientSize.Width / 2, 0, pbGraph.ClientSize.Width / 2, pbGraph.ClientSize.Height);
@@ -239,7 +236,7 @@ namespace Plotter
 
                     if (!first)
                     {
-                        using (Pen pen = new Pen(Color.Blue))
+                        using (var pen = new Pen(Color.Blue))
                         {
                             PointF p0 = TransformPoint(x0, y0);
                             PointF p = TransformPoint(x, y);
@@ -282,10 +279,7 @@ namespace Plotter
             txtExpression2.Top = txtExpression1.Top;
         }
 
-        private void pbGraph_Resize(object sender, EventArgs e)
-        {
-            pbGraph.Invalidate();
-        }
+        private void pbGraph_Resize(object sender, EventArgs e) => pbGraph.Invalidate();
 
         private void rbRectangular_CheckedChanged(object sender, EventArgs e)
         {

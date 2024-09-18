@@ -9,7 +9,7 @@ namespace Plotter
         private string input;
         private int pos;
 
-        private List<Token> tokens;
+        private readonly List<Token> tokens;
         private int tokenIndex;
 
         public string Input
@@ -39,13 +39,7 @@ namespace Plotter
             Input = input;
         }
 
-        public Token CurrentToken()
-        {
-            if (tokens.Count == 0)
-                return null;
-
-            return tokens[tokenIndex];
-        }
+        public Token CurrentToken() => tokens.Count == 0 ? null : tokens[tokenIndex];
 
         public Token NextToken()
         {
@@ -141,20 +135,18 @@ namespace Plotter
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "Number expected but end of expression found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "Number expected but end of expression found.")
+                    : (Number) null;
             }
 
             if (!(token is Number))
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "Number expected but " + token + " found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "Number expected but " + token + " found.")
+                    : (Number) null;
             }
 
             return (Number)token;
@@ -167,31 +159,28 @@ namespace Plotter
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' but end of expression found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' but end of expression found.")
+                    : (Number) null;
             }
 
             if (!(token is Symbol))
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but " + token + " found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but " + token + " found.")
+                    : (Number) null;
             }
 
-            Number number = (Number)token;
+            var number = (Number)token;
             if (number.Value != expectedValue)
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but '" + number.Value + "' found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but '" + number.Value + "' found.")
+                    : (Number) null;
             }
 
             return number;
@@ -204,20 +193,18 @@ namespace Plotter
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "Symbol expected but end of expression found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "Symbol expected but end of expression found.")
+                    : (Symbol) null;
             }
 
             if (!(token is Symbol))
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "Symbol expected but " + token + " found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "Symbol expected but " + token + " found.")
+                    : (Symbol) null;
             }
 
             return (Symbol)token;
@@ -230,31 +217,28 @@ namespace Plotter
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but end of expression found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but end of expression found.")
+                    : (Symbol) null;
             }
 
             if (!(token is Symbol))
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but " + token + " found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but " + token + " found.")
+                    : (Symbol) null;
             }
 
-            Symbol symbol = (Symbol)token;
+            var symbol = (Symbol)token;
             if (symbol.Value != expectedValue)
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but '" + symbol.Value + "' found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but '" + symbol.Value + "' found.")
+                    : (Symbol) null;
             }
 
             return symbol;
@@ -267,20 +251,18 @@ namespace Plotter
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "Variable expected but end of expression found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "Variable expected but end of expression found.")
+                    : (Variable) null;
             }
 
             if (!(token is Variable))
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "Variable expected but " + token + " found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "Variable expected but " + token + " found.")
+                    : (Variable) null;
             }
 
             return (Variable)token;
@@ -293,31 +275,28 @@ namespace Plotter
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' but end of expression found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' but end of expression found.")
+                    : (Variable) null;
             }
 
             if (!(token is Symbol))
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but " + token + " found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but " + token + " found.")
+                    : (Variable) null;
             }
 
-            Variable variable = (Variable)token;
+            var variable = (Variable)token;
             if (variable.Name != expectedValue)
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but '" + variable.Name + "' found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but '" + variable.Name + "' found.")
+                    : (Variable) null;
             }
 
             return variable;
@@ -330,20 +309,18 @@ namespace Plotter
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "Constant expected but end of expression found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "Constant expected but end of expression found.")
+                    : (Constant) null;
             }
 
             if (!(token is Constant))
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "Constant expected but " + token + " found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "Constant expected but " + token + " found.")
+                    : (Constant) null;
             }
 
             return (Constant)token;
@@ -356,31 +333,28 @@ namespace Plotter
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' but end of expression found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' but end of expression found.")
+                    : (Constant) null;
             }
 
             if (!(token is Symbol))
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but " + token + " found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but " + token + " found.")
+                    : (Constant) null;
             }
 
-            Constant constant = (Constant)token;
+            var constant = (Constant)token;
             if (constant.Name != expectedValue)
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but '" + constant.Name + "' found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but '" + constant.Name + "' found.")
+                    : (Constant) null;
             }
 
             return constant;
@@ -393,20 +367,18 @@ namespace Plotter
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "Function expected but end of expression found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "Function expected but end of expression found.")
+                    : (Function) null;
             }
 
             if (!(token is Function))
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "Function expected but " + token + " found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "Function expected but " + token + " found.")
+                    : (Function) null;
             }
 
             return (Function)token;
@@ -419,31 +391,28 @@ namespace Plotter
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' but end of expression found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' but end of expression found.")
+                    : (Function) null;
             }
 
             if (!(token is Symbol))
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but " + token + " found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but " + token + " found.")
+                    : (Function) null;
             }
 
-            Function function = (Function)token;
+            var function = (Function)token;
             if (function.Name != expectedValue)
             {
                 PreviusToken();
 
-                if (throwException)
-                    throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but '" + function.Name + "' found.");
-
-                return null;
+                return throwException
+                    ? throw new ParserException(errorMessage != null ? errorMessage : "'" + expectedValue + "' expected but '" + function.Name + "' found.")
+                    : (Function) null;
             }
 
             return function;
@@ -455,10 +424,7 @@ namespace Plotter
                 return null;
 
             --tokenIndex;
-            if (tokenIndex < 0)
-                return null;
-
-            return tokens[tokenIndex];
+            return tokenIndex < 0 ? null : tokens[tokenIndex];
         }
     }
 }

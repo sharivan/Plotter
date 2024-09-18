@@ -40,62 +40,34 @@ namespace Plotter
             ATANH = 28 // tangente hiperbólica inversa
         }
 
-        private bool generateExceptionObject; // indica se o método Eval deve ou não gerar uma exceção quando um erro aritimético ocorre durante a avaliação
+        private readonly MemoryStream operations; // stream contendo as operações
+        private readonly BinaryReader reader; // leitor da stream de operações
+        private readonly BinaryWriter writer; // escritor da stream de operações
 
-        private MemoryStream operations; // stream contendo as operações
-        private BinaryReader reader; // leitor da stream de operações
-        private BinaryWriter writer; // escritor da stream de operações
-
-        private Stack<float> stack; // pilha contendo o resultado das operações
-        private List<float> vars; // lista de variáveis
-        private Dictionary<string, int> varMap; // dicionário contendo o mapeamento dos nomes de variáveis para seus respectivos indices
-
-        private bool exception; // indica se ocorreu um erro aritimético durante a avaliação
-        private ArithmeticException exceptionObject; // se generateExceptionObject for true, indica a exceção relacionada ao erro aritimético ocorrido durante a avaliação
+        private readonly Stack<float> stack; // pilha contendo o resultado das operações
+        private readonly List<float> vars; // lista de variáveis
+        private readonly Dictionary<string, int> varMap; // dicionário contendo o mapeamento dos nomes de variáveis para seus respectivos indices
 
         public bool GenerateExceptionObject
         {
-            get
-            {
-                return generateExceptionObject;
-            }
-
-            set
-            {
-                generateExceptionObject = value;
-            }
+            get;
+            set;
         }
 
-        public long Size
-        {
-            get
-            {
-                return operations.Length;
-            }
-        }
+        public long Size => operations.Length;
 
-        public int VarCount
-        {
-            get
-            {
-                return vars.Count;
-            }
-        }
+        public int VarCount => vars.Count;
 
         public bool Exception
         {
-            get
-            {
-                return exception;
-            }
+            get;
+            private set;
         }
 
         public ArithmeticException ExceptionObject
         {
-            get
-            {
-                return exceptionObject;
-            }
+            get;
+            private set;
         }
 
         public StackMachine()
@@ -108,158 +80,74 @@ namespace Plotter
             vars = new List<float>();
             varMap = new Dictionary<string, int>();
 
-            generateExceptionObject = true;
+            GenerateExceptionObject = true;
         }
 
         public void PushLConst(float number)
         {
-            writer.Write((byte)Operator.LCONST);
+            writer.Write((byte) Operator.LCONST);
             writer.Write(number);
         }
 
         public void PushLVar(string name)
         {
             int varIndex = SetVar(name, 0);
-            writer.Write((byte)Operator.LVAR);
+            writer.Write((byte) Operator.LVAR);
             writer.Write(varIndex);
         }
 
-        public void PushAdd()
-        {
-            writer.Write((byte)Operator.ADD);
-        }
+        public void PushAdd() => writer.Write((byte) Operator.ADD);
 
-        public void PushSub()
-        {
-            writer.Write((byte)Operator.SUB);
-        }
+        public void PushSub() => writer.Write((byte) Operator.SUB);
 
-        public void PushMul()
-        {
-            writer.Write((byte)Operator.MUL);
-        }
+        public void PushMul() => writer.Write((byte) Operator.MUL);
 
-        public void PushDiv()
-        {
-            writer.Write((byte)Operator.DIV);
-        }
+        public void PushDiv() => writer.Write((byte) Operator.DIV);
 
-        public void PushPow()
-        {
-            writer.Write((byte)Operator.POW);
-        }
+        public void PushPow() => writer.Write((byte) Operator.POW);
 
-        public void PushSqrt()
-        {
-            writer.Write((byte)Operator.SQRT);
-        }
+        public void PushSqrt() => writer.Write((byte) Operator.SQRT);
 
-        public void PushCbrt()
-        {
-            writer.Write((byte)Operator.CBRT);
-        }
+        public void PushCbrt() => writer.Write((byte) Operator.CBRT);
 
-        public void PushExp()
-        {
-            writer.Write((byte)Operator.EXP);
-        }
+        public void PushExp() => writer.Write((byte) Operator.EXP);
 
-        public void PushLn()
-        {
-            writer.Write((byte)Operator.LN);
-        }
+        public void PushLn() => writer.Write((byte) Operator.LN);
 
-        public void PushSin()
-        {
-            writer.Write((byte)Operator.SIN);
-        }
+        public void PushSin() => writer.Write((byte) Operator.SIN);
 
-        public void PushCos()
-        {
-            writer.Write((byte)Operator.COS);
-        }
+        public void PushCos() => writer.Write((byte) Operator.COS);
 
-        public void PushTan()
-        {
-            writer.Write((byte)Operator.TAN);
-        }
+        public void PushTan() => writer.Write((byte) Operator.TAN);
 
-        public void PushSec()
-        {
-            writer.Write((byte)Operator.SEC);
-        }
+        public void PushSec() => writer.Write((byte) Operator.SEC);
 
-        public void PushCosec()
-        {
-            writer.Write((byte)Operator.COSEC);
-        }
+        public void PushCosec() => writer.Write((byte) Operator.COSEC);
 
-        public void PushCotan()
-        {
-            writer.Write((byte)Operator.COTAN);
-        }
+        public void PushCotan() => writer.Write((byte) Operator.COTAN);
 
-        public void PushASin()
-        {
-            writer.Write((byte)Operator.ASIN);
-        }
-        public void PushACos()
-        {
-            writer.Write((byte)Operator.ACOS);
-        }
+        public void PushASin() => writer.Write((byte) Operator.ASIN);
+        public void PushACos() => writer.Write((byte) Operator.ACOS);
 
-        public void PushATan()
-        {
-            writer.Write((byte)Operator.ATAN);
-        }
+        public void PushATan() => writer.Write((byte) Operator.ATAN);
 
-        public void PushAbs()
-        {
-            writer.Write((byte)Operator.ABS);
-        }
+        public void PushAbs() => writer.Write((byte) Operator.ABS);
 
-        public void PushSinH()
-        {
-            writer.Write((byte)Operator.SINH);
-        }
+        public void PushSinH() => writer.Write((byte) Operator.SINH);
 
-        public void PushCosH()
-        {
-            writer.Write((byte)Operator.COSH);
-        }
+        public void PushCosH() => writer.Write((byte) Operator.COSH);
 
-        public void PushTanH()
-        {
-            writer.Write((byte)Operator.TANH);
-        }
+        public void PushTanH() => writer.Write((byte) Operator.TANH);
 
-        public void PushASinH()
-        {
-            writer.Write((byte)Operator.ASINH);
-        }
+        public void PushASinH() => writer.Write((byte) Operator.ASINH);
 
-        public void PushACosH()
-        {
-            writer.Write((byte)Operator.ACOSH);
-        }
+        public void PushACosH() => writer.Write((byte) Operator.ACOSH);
 
-        public void PushATanH()
-        {
-            writer.Write((byte)Operator.ATANH);
-        }
+        public void PushATanH() => writer.Write((byte) Operator.ATANH);
 
-        public void PushNeg()
-        {
-            writer.Write((byte)Operator.NEG);
-        }
+        public void PushNeg() => writer.Write((byte) Operator.NEG);
 
-        public int GetVarIndex(string name)
-        {
-            if (!varMap.ContainsKey(name))
-                return -1;
-
-            return varMap[name];
-        }
+        public int GetVarIndex(string name) => !varMap.ContainsKey(name) ? -1 : varMap[name];
 
         public int SetVar(string name, float value)
         {
@@ -279,32 +167,29 @@ namespace Plotter
             return varIndex;
         }
 
-        public void SetVar(int varIndex, float value)
-        {
-            vars[varIndex] = value;
-        }
+        public void SetVar(int varIndex, float value) => vars[varIndex] = value;
 
         private float CheckResult(float result)
         {
             if (float.IsInfinity(result))
             {
-                exception = true;
+                Exception = true;
 
-                if (generateExceptionObject)
+                if (GenerateExceptionObject)
                 {
-                    exceptionObject = new ArithmeticException("Result is infinity.");
-                    throw exceptionObject;
+                    ExceptionObject = new ArithmeticException("Result is infinity.");
+                    throw ExceptionObject;
                 }
             }
 
             if (float.IsNaN(result))
             {
-                exception = true;
+                Exception = true;
 
-                if (generateExceptionObject)
+                if (GenerateExceptionObject)
                 {
-                    exceptionObject = new ArithmeticException("Result is NaN.");
-                    throw exceptionObject;
+                    ExceptionObject = new ArithmeticException("Result is NaN.");
+                    throw ExceptionObject;
                 }
             }
 
@@ -313,8 +198,8 @@ namespace Plotter
 
         public float Eval()
         {
-            exception = false;
-            exceptionObject = null;
+            Exception = false;
+            ExceptionObject = null;
 
             if (operations.Length == 0)
                 throw new Exception("No operations.");
@@ -329,7 +214,7 @@ namespace Plotter
 
             while (operations.Position < len)
             {
-                Operator op = (Operator)reader.ReadByte();
+                var op = (Operator) reader.ReadByte();
                 switch (op)
                 {
                     case Operator.LCONST:
@@ -351,10 +236,10 @@ namespace Plotter
                         }
                         catch (ArithmeticException e)
                         {
-                            exception = true;
-                            if (generateExceptionObject)
+                            Exception = true;
+                            if (GenerateExceptionObject)
                             {
-                                exceptionObject = e;
+                                ExceptionObject = e;
                                 throw e;
                             }
                         }
@@ -371,10 +256,10 @@ namespace Plotter
                         }
                         catch (ArithmeticException e)
                         {
-                            exception = true;
-                            if (generateExceptionObject)
+                            Exception = true;
+                            if (GenerateExceptionObject)
                             {
-                                exceptionObject = e;
+                                ExceptionObject = e;
                                 throw e;
                             }
                         }
@@ -391,10 +276,10 @@ namespace Plotter
                         }
                         catch (ArithmeticException e)
                         {
-                            exception = true;
-                            if (generateExceptionObject)
+                            Exception = true;
+                            if (GenerateExceptionObject)
                             {
-                                exceptionObject = e;
+                                ExceptionObject = e;
                                 throw e;
                             }
                         }
@@ -407,12 +292,12 @@ namespace Plotter
 
                         if (operand2 == 0)
                         {
-                            exception = true;
+                            Exception = true;
 
-                            if (generateExceptionObject)
+                            if (GenerateExceptionObject)
                             {
-                                exceptionObject = new ArithmeticException("Division by zero.");
-                                throw exceptionObject;
+                                ExceptionObject = new ArithmeticException("Division by zero.");
+                                throw ExceptionObject;
                             }
 
                             break;
@@ -424,10 +309,10 @@ namespace Plotter
                         }
                         catch (ArithmeticException e)
                         {
-                            exception = true;
-                            if (generateExceptionObject)
+                            Exception = true;
+                            if (GenerateExceptionObject)
                             {
-                                exceptionObject = e;
+                                ExceptionObject = e;
                                 throw e;
                             }
                         }
@@ -437,103 +322,103 @@ namespace Plotter
                     case Operator.POW:
                         operand2 = stack.Pop();
                         operand1 = stack.Pop();
-                        stack.Push(CheckResult((float)Math.Pow(operand1, operand2)));
+                        stack.Push(CheckResult((float) Math.Pow(operand1, operand2)));
                         break;
 
                     case Operator.SQRT:
                         operand1 = stack.Pop();
                         if (operand1 < 0)
                         {
-                            exception = true;
+                            Exception = true;
 
-                            if (generateExceptionObject)
+                            if (GenerateExceptionObject)
                             {
-                                exceptionObject = new ArithmeticException("Sqrt of a negative operand: " + operand1);
-                                throw exceptionObject;
+                                ExceptionObject = new ArithmeticException("Sqrt of a negative operand: " + operand1);
+                                throw ExceptionObject;
                             }
 
                             break;
                         }
 
-                        stack.Push(CheckResult((float)Math.Sqrt(operand1)));
+                        stack.Push(CheckResult((float) Math.Sqrt(operand1)));
                         break;
 
                     case Operator.CBRT:
                         operand1 = stack.Pop();
-                        stack.Push(CheckResult((float)Math.Cbrt(operand1)));
+                        stack.Push(CheckResult((float) Math.Cbrt(operand1)));
                         break;
 
                     case Operator.EXP:
                         operand1 = stack.Pop();
-                        stack.Push(CheckResult((float)Math.Exp(operand1)));
+                        stack.Push(CheckResult((float) Math.Exp(operand1)));
                         break;
 
                     case Operator.LN:
                         operand1 = stack.Pop();
                         if (operand1 <= 0)
                         {
-                            exception = true;
+                            Exception = true;
 
-                            if (generateExceptionObject)
+                            if (GenerateExceptionObject)
                             {
-                                exceptionObject = new ArithmeticException("Ln of a non positive operand: " + operand1);
-                                throw exceptionObject;
+                                ExceptionObject = new ArithmeticException("Ln of a non positive operand: " + operand1);
+                                throw ExceptionObject;
                             }
 
                             break;
                         }
 
-                        stack.Push(CheckResult((float)Math.Log(operand1)));
+                        stack.Push(CheckResult((float) Math.Log(operand1)));
                         break;
 
                     case Operator.SIN:
                         operand1 = stack.Pop();
-                        stack.Push(CheckResult((float)Math.Sin(operand1)));
+                        stack.Push(CheckResult((float) Math.Sin(operand1)));
                         break;
 
                     case Operator.COS:
                         operand1 = stack.Pop();
-                        stack.Push(CheckResult((float)Math.Cos(operand1)));
+                        stack.Push(CheckResult((float) Math.Cos(operand1)));
                         break;
 
                     case Operator.TAN:
                         operand1 = stack.Pop();
-                        stack.Push(CheckResult((float)Math.Tan(operand1)));
+                        stack.Push(CheckResult((float) Math.Tan(operand1)));
                         break;
 
                     case Operator.SEC:
                         operand1 = stack.Pop();
-                        stack.Push(CheckResult((float)checked(1 / Math.Cos(operand1))));
+                        stack.Push(CheckResult((float) checked(1 / Math.Cos(operand1))));
                         break;
 
                     case Operator.COSEC:
                         operand1 = stack.Pop();
-                        stack.Push(CheckResult((float)checked(1 / Math.Sin(operand1))));
+                        stack.Push(CheckResult((float) checked(1 / Math.Sin(operand1))));
                         break;
 
                     case Operator.COTAN:
                         operand1 = stack.Pop();
-                        stack.Push(CheckResult((float)checked(1 / Math.Tan(operand1))));
+                        stack.Push(CheckResult((float) checked(1 / Math.Tan(operand1))));
                         break;
 
                     case Operator.ASIN:
                         operand1 = stack.Pop();
-                        stack.Push(CheckResult((float)Math.Asin(operand1)));
+                        stack.Push(CheckResult((float) Math.Asin(operand1)));
                         break;
 
                     case Operator.ACOS:
                         operand1 = stack.Pop();
-                        stack.Push(CheckResult((float)Math.Acos(operand1)));
+                        stack.Push(CheckResult((float) Math.Acos(operand1)));
                         break;
 
                     case Operator.ATAN:
                         operand1 = stack.Pop();
-                        stack.Push(CheckResult((float)Math.Atan(operand1)));
+                        stack.Push(CheckResult((float) Math.Atan(operand1)));
                         break;
 
                     case Operator.ABS:
                         operand1 = stack.Pop();
-                        stack.Push(CheckResult((float)Math.Abs(operand1)));
+                        stack.Push(CheckResult((float) Math.Abs(operand1)));
                         break;
 
                     case Operator.NEG:
@@ -543,39 +428,39 @@ namespace Plotter
 
                     case Operator.SINH:
                         operand1 = stack.Pop();
-                        stack.Push(CheckResult((float)Math.Sinh(operand1)));
+                        stack.Push(CheckResult((float) Math.Sinh(operand1)));
                         break;
 
                     case Operator.COSH:
                         operand1 = stack.Pop();
-                        stack.Push(CheckResult((float)Math.Cosh(operand1)));
+                        stack.Push(CheckResult((float) Math.Cosh(operand1)));
                         break;
 
                     case Operator.TANH:
                         operand1 = stack.Pop();
-                        stack.Push(CheckResult((float)Math.Tanh(operand1)));
+                        stack.Push(CheckResult((float) Math.Tanh(operand1)));
                         break;
 
                     case Operator.ASINH:
                         operand1 = stack.Pop();
-                        stack.Push(CheckResult((float)Math.Asinh(operand1)));
+                        stack.Push(CheckResult((float) Math.Asinh(operand1)));
                         break;
 
                     case Operator.ACOSH:
                         operand1 = stack.Pop();
-                        stack.Push(CheckResult((float)Math.Acosh(operand1)));
+                        stack.Push(CheckResult((float) Math.Acosh(operand1)));
                         break;
 
                     case Operator.ATANH:
                         operand1 = stack.Pop();
-                        stack.Push(CheckResult((float)Math.Atanh(operand1)));
+                        stack.Push(CheckResult((float) Math.Atanh(operand1)));
                         break;
 
                     default:
                         throw new InvalidOperationException("Invalid operation: " + op);
                 }
 
-                if (exception)
+                if (Exception)
                     return float.NaN;
             }
 

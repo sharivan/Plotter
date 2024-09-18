@@ -6,10 +6,7 @@ namespace Plotter
 {
     public class Variable : Token
     {
-        public static bool IsLetter(char c)
-        {
-            return 'A' <= c && c <= 'Z' || 'a' <= c && c <= 'z';
-        }
+        public static bool IsLetter(char c) => 'A' <= c && c <= 'Z' || 'a' <= c && c <= 'z';
 
         public static bool CanBeAVariableName(string name)
         {
@@ -35,24 +32,13 @@ namespace Plotter
             return true;
         }
 
-        private string name;
-
-        public string Name
-        {
-            get
-            {
-                return name;
-            }
-        }
+        public string Name { get; }
 
         public Variable(string name)
         {
-            this.name = name;
+            this.Name = name;
         }
 
-        public override string ToString()
-        {
-            return "variable '" + name + "'";
-        }
+        public override string ToString() => "variable '" + Name + "'";
     }
 }

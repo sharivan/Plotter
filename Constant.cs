@@ -17,24 +17,13 @@ namespace Plotter
             return false;
         }
 
-        private string name;
-
-        public string Name
-        {
-            get
-            {
-                return name;
-            }
-        }
+        public string Name { get; }
 
         public Constant(string name)
         {
-            this.name = name;
+            this.Name = name;
         }
 
-        public override string ToString()
-        {
-            return "constant '" + name + "'";
-        }
+        public override string ToString() => "constant '" + Name + "'";
     }
 }
